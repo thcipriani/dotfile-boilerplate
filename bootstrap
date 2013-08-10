@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+#
+# bootstrap installs things.
+
+DOTFILES_ROOT="$HOME/.dotfiles"
+
+set -e
+
+echo ''
+
+info () {
+  printf "  [ \033[00;34m..\033[0m ] $1"
+}
+
+user () {
+  printf "\r  [ \033[0;33m?\033[0m ] $1 "
+}
+
+success () {
+  printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+}
+
+fail () {
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  echo ''
+  exit
+}
+
+link_files () {
+  ln -s $1 $2
+  success "linked $1 to $2"
+}
+
+prompt_shell () {
+    user "Could not detect shell type (or shell type wasn't bash or zsh). What do you want to do? [S]kip shell dotfiles, use [b]ash dotfiles, use [z]sh dotfiles?"
+    read -n 1 shelltype
+    case "$shelltype" in
+      b )
+        SHELL='bash';;
+      z )
+        SHELL='zsh';;
+      * )
+        SHELL='';;
+    esac
+}
+
+
+check_shell () {
+    if [[ ! -z $MYSHELL ]]; then
+        SHELL=$(basename $MYSHELL);
+
+        if [[ $SHELL != 'bash' && $SHELL != 'zsh' ]]; then
+            prompt_shell
+        fi
+    else 
+        prompt_shell
+    fi
+}
+
+oh_my_zsh_check () {
+    if [[ $SHELL == 'zsh' ]]; then
+        if type git >/dev/null 2>&1; then
+            git clone git://github.com/sjl/oh-my-zsh.git $HOME/.oh-my-zsh
+        else
+            echo 'git not found—skipping .oh-my-zsh install'
+            $SHELL = ''
+        fi
+    fi
+}
+
+install_dotfiles () {
+  info 'installing dotfiles'
+
+    case "$SHELL" in
+        zsh )
+            files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/*");;
+        bash )
+            files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*");;
+        * )
+            files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*" -path "$DOTFILES_ROOT/bash/*");;
+    esac
+
+  overwrite_all=false
+  backup_all=false
+  skip_all=false
+
+  for source in $files; do
+    dest="$HOME/.$(basename \"${source%.*}\")"
+
+    if [ -f $dest ] || [ -d $dest ]; then
+
+      overwrite=false
+      backup=false
+      skip=false
+
+      if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]; then
+        user "File already exists: $(basename $dest), what do you want to do? [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
+        read -n 1 action
+
+        case "$action" in
+          o )
+            overwrite=true;;
+          O )
+            overwrite_all=true;;
+          b )
+            backup=true;;
+          B )
+            backup_all=true;;
+          s )
+            skip=true;;
+          S )
+            skip_all=true;;
+          * )
+            ;;
+        esac
+      fi
+
+      if [ "$overwrite" == "true" ] || [ "$overwrite_all" == "true" ]; then
+        rm -rf $dest
+        success "removed $dest"
+      fi
+
+      if [ "$backup" == "true" ] || [ "$backup_all" == "true" ]; then
+        mv $dest $dest\.backup
+        success "moved $dest to $dest.backup"
+      fi
+
+      if [ "$skip" == "false" ] && [ "$skip_all" == "false" ]; then
+        link_files $source $dest
+      else
+        success "skipped $source"
+      fi
+
+    else
+      link_files $source $dest
+    fi
+
+  done
+}
+
+check_shell
+oh_my_zsh_check
+install_dotfiles
+
+echo ''
+echo '  All installed!'

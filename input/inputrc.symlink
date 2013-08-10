@@ -1,0 +1,65 @@
+# DISCUSSION:
+# http://www.reddit.com/r/commandline/comments/kbeoe/you_can_make_readline_and_bash_much_more_user/
+
+# This one is pretty obvious from the name; when completing case will not 
+# be taken into consideration.
+set completion-ignore-case on
+
+# This one is insanely useful when you have a folder with lots of similarly 
+# named files and you are not sure how far the completion has gone when you 
+# press TAB. The first part that has been completed will be replaced by "...", 
+# and it is simple to see what you need to type to finish the completion.
+set completion-prefix-display-length 2
+
+# List all matches in case multiple possible completions are possible
+
+
+# These will make completions appear immediately after pressing TAB once, 
+# instead of the default behavior which is to show them after pressing twice. 
+# I think you'll find this saves you many unnecessary keystrokes, but the 
+# potential downside is that it could take up the space of terminal backlog 
+# you were intending on keeping visible.
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+
+# With this enabled, underscores and hyphens are treated equally when 
+# completing, which is a plus to me because I find hyphens a lot easier to type.
+set completion-map-case on
+
+# REMAINDER Modified/Stolen from:
+# http://mths.be/dotfiles
+
+# Immediately add a trailing slash when autocompleting symlinks to directories
+set mark-symlinked-directories on
+
+# Use the text that has already been typed as the prefix for searching through
+# commands (i.e. more intelligent Up/Down behavior)
+"\e[B": history-search-forward
+"\e[A": history-search-backward
+
+# Do not autocomplete hidden files unless the pattern explicitly begins with a dot
+set match-hidden-files off
+
+# Show all autocomplete results at once
+set page-completions off
+
+# If there are more than 200 possible completions for a word, ask to show them all
+set completion-query-items 200
+
+# Show extra file information when completing, like `ls -F` does
+set visible-stats on
+
+# Be more intelligent when autocompleting by also looking at the text after
+# the cursor. For example, when the current line is "cd ~/src/mozil", and
+# the cursor is on the "z", pressing Tab will not autocomplete it to "cd
+# ~/src/mozillail", but to "cd ~/src/mozilla". (This is supported by the
+# Readline used by Bash 4.)
+set skip-completed-text on
+
+# Allow UTF-8 input and output, instead of showing stuff like $'\0123\0456'
+set input-meta on
+set output-meta on
+set convert-meta off
+
+# Use Alt/Meta + Delete to delete the preceding word
+"\e[3;3~": kill-word
