@@ -26,7 +26,7 @@ complete -W "NSGlobalDomain" defaults
 
 # Load ~/.bash_prompt, ~/.exports, ~/.aliases, ~/.functions, and ~/.extra
 for file in ~/.{bash_prompt,exports,aliases,functions,extra}; do
-	[ -r "$file" ] && source "$file"
+    [ -r "$file" ] && source "$file"
 done
 unset file
 
