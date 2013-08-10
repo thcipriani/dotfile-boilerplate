@@ -24,8 +24,8 @@ done
 # You could just use `-g` instead, but I like being explicit
 complete -W "NSGlobalDomain" defaults
 
-# Load ~/.bash_prompt, ~/.exports, ~/.aliases, ~/.functions, and ~/.extra
-for file in ~/.{bash_prompt,exports,aliases,functions,extra}; do
+# Load ~/.exports, ~/.aliases, ~/.functions, ~/.fun, and ~/.extra
+for file in ~/.{exports,aliases,functions,fun,extra}; do
     [ -r "$file" ] && source "$file"
 done
 unset file

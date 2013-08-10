@@ -20,8 +20,8 @@ plugins=(osx git ruby gem node npm heroku cap bundler brew cake rails3 redis-cli
 
 source $ZSH/oh-my-zsh.sh
 
-# Load ~/.exports, ~/.aliases, ~/.functions, and ~/.extra
-for file in ~/.{exports,aliases,functions,extra}; do
+# Load ~/.exports, ~/.aliases, ~/.functions, ~/.fun, and ~/.extra
+for file in ~/.{exports,aliases,functions,fun,extra}; do
     [ -r "$file" ] && source "$file"
 done
 unset file
