@@ -1,1 +1,17 @@
 # Last things sourced save /etc/bashrc
+
+if [ $(uname -s) == "Darwin" ]; then
+    source ~/.osx.shell/extra
+elif [ $(uname -s) == "Linux" ]; then
+    source ~/.linux.shell/extra
+fi
+
+for extra in $extras; do
+    if [ -f ~/.extras/$extra ]; then
+        source ~/.extras/$extra
+    elif [[ -f ~/.extras/osx/$extra && $(uname -s) == "Darwin" ]]; then
+        source ~/.extras/osx/$extra
+    elif [[ -f ~/.extras/linux/$extra && $(uname -s) == "Linux" ]]; then
+        source ~/.extras/linux/$extra
+    fi
+done

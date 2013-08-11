@@ -78,20 +78,29 @@ install_dotfiles () {
     if [ $(uname -s) == "Darwin" ]; then
         case "$SHELL" in
             zsh )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/*");;
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/linux/");;
             bash )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*");;
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/linux/");;
             * )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*" -not -path "$DOTFILES_ROOT/bash/*");;
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/linux/");;
+        esac
+    elif [ $(uname -s) == "Linux" ]; then
+        case "$SHELL" in
+            zsh )
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/osx/");;
+            bash )
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/osx/");;
+            * )
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/osx/");;
         esac
     else
         case "$SHELL" in
             zsh )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/*" -not -path "$DOTFILES_ROOT/osx/*");;
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/osx/" -not -path "$DOTFILES_ROOT/linux/");;
             bash )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*" -not -path "$DOTFILES_ROOT/osx/*");;
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/osx/" -not -path "$DOTFILES_ROOT/linux/");;
             * )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*" -not -path "$DOTFILES_ROOT/bash/*" -not -path "$DOTFILES_ROOT/osx/*");;
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/osx/" -not -path "$DOTFILES_ROOT/linux/");;
         esac
     fi
 

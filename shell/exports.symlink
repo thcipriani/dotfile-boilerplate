@@ -26,3 +26,9 @@ export GREP_OPTIONS="--color=auto"
 
 # Customize to your needs...
 export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+
+if [ $(uname -s) == "Darwin" ]; then
+    source ~/.osx.shell/exports
+elif [ $(uname -s) == "Linux" ]; then
+    source ~/.linux.shell/exports
+fi

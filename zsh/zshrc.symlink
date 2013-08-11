@@ -1,3 +1,8 @@
+# Place extras here
+extras=(git)
+
+export DOTFILES_ROOT="$HOME/.dotfiles"
+
 # Path to your oh-my-zsh configuration.
 export ZSH=$HOME/.oh-my-zsh
 

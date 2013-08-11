@@ -98,5 +98,7 @@ done
 command -v grunt > /dev/null && alias grunt="grunt --stack"
 
 if [ $(uname -s) == "Darwin" ]; then
-    source ~/.aliases.osx
+    source ~/.osx.shell/aliases
+elif [ $(uname -s) == "Linux" ]; then
+    source ~/.linux.shell/aliases
 fi

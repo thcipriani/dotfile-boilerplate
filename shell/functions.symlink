@@ -203,5 +203,7 @@ function gi() {
 }
 
 if [ $(uname -s) == "Darwin" ]; then
-    source ~/.functions.osx
+    source ~/.osx.shell/functions
+elif [ $(uname -s) == "Linux" ]; then
+    source ~/.linux.shell/functions
 fi
