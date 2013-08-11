@@ -75,14 +75,25 @@ oh_my_zsh_check () {
 install_dotfiles () {
     info 'installing dotfiles'
 
-    case "$SHELL" in
-        zsh )
-            files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/*");;
-        bash )
-            files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*");;
-        * )
-            files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*" -not -path "$DOTFILES_ROOT/bash/*");;
-    esac
+    if [ $(uname -s) == "Darwin" ]; then
+        case "$SHELL" in
+            zsh )
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/*");;
+            bash )
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*");;
+            * )
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*" -not -path "$DOTFILES_ROOT/bash/*");;
+        esac
+    else
+        case "$SHELL" in
+            zsh )
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/*" -not -path "$DOTFILES_ROOT/osx/*");;
+            bash )
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*" -not -path "$DOTFILES_ROOT/osx/*");;
+            * )
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/*" -not -path "$DOTFILES_ROOT/bash/*" -not -path "$DOTFILES_ROOT/osx/*");;
+        esac
+    fi
 
   overwrite_all=false
   backup_all=false
