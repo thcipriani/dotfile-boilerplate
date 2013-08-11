@@ -1,0 +1,10 @@
+# PBCopy on Linux
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
+
+# From "Cowboy" Ben Alman https://github.com/cowboy/dotfiles/blob/master/source/50_ubuntu.sh
+# Package management
+alias update="sudo apt-get -qq update && sudo apt-get upgrade"
+alias install="sudo apt-get install"
+alias remove="sudo apt-get remove"
+alias search="apt-cache search"
