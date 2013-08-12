@@ -45,7 +45,3 @@ dotfile-boilerplate heavily "borrows" from many fine dotfile repos
 ## Contributing
 
 Fork me and send me a pull request =)
-
-## Todo
-
-- Get ZSHRC uncomment sed to work

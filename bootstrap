@@ -25,8 +25,10 @@ fail () {
 }
 
 restart_shell () {
-    sleep 3
-    source "$HOME/.${SHELL}rc"
+    if [[ ! -z $SHELL ]]; then
+        exec $SHELL
+        source "$HOME/.${SHELL}rc"
+    fi
 }
 
 link_files () {
@@ -65,6 +67,29 @@ check_shell () {
     framework_check
 }
 
+check_vimrc () {
+    if [[ $(cat $DOTFILES_ROOT/vim/vimrc.symlink | wc -l) -lt 20 ]]; then
+        INSTALL_JANUS=false
+        if ! type curl >/dev/null 2>&1; then
+            info "You'll need to install curl to install JANUS"
+            return
+        fi
+        user "Your .vimrc is a bit bare. Would you like to install Janus for Vim? [y/N]"
+        read installit
+
+        case "$installit" in
+            Y*|y*) INSTALL_JANUS=true ;;
+            N*|n*) INSTALL_JANUS=false ;;
+            *) INSTALL_JANUS=false ;;
+        esac
+
+        if $INSTALL_JANUS ; then
+            curl -Lo- https://bit.ly/janus-bootstrap | bash
+        fi
+
+    fi
+}
+
 oh_my_zsh_check () {
     # check already installed
     if [ -d $HOME/.oh-my-zsh ]; then
@@ -76,7 +101,7 @@ oh_my_zsh_check () {
     read installit
 
     case "$installit" in
-        Y*|y*) INTSTALL_OH_MY=true ;;
+        Y*|y*) INSTALL_OH_MY=true ;;
         N*|n*) INSTALL_OH_MY=false ;;
         *) INSTALL_OH_MY=false ;;
     esac
@@ -138,27 +163,27 @@ install_dotfiles () {
                 files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx")
             fi
 
-            if [[ $INSTALL_OH_MY == true ]]; then
-                echo 'Uncomment zshrc'
+            if ${INSTALL_OH_MY:-false} ; then
+                echo 'Uncomment .zshrc'
                 # Uncomment the OH-MY-ZSH section if it exists
-                sed -i '/^#~OH-MY-ZSH~#$/,/^#~\/OH-MY-ZSH~#$/s/^#//' "$DOTFILES_ROOT/zsh/zshrc.symlink"
+                sed -i '/^##~OH-MY-ZSH~#$/,/^##~\/OH-MY-ZSH~#$/s/^#//' "$DOTFILES_ROOT/zsh/zshrc.symlink"
             fi
             ;;
         bash )
             if [[ $(uname -s) == "Linux" ]]; then
-                if [[ $INSTALL_BASH_IT == false ]]; then
+                if [[ ! ${INSTALL_BASH_IT:-false} ]]; then
                     files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "osx" | grep -v "zsh")
                 else
                     files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "osx" | grep -v "zsh")
                 fi
             elif [[ $(uname -s) == "Darwin" ]]; then
-                if [[ $INSTALL_BASH_IT == false ]]; then
+                if [[ ! ${INSTALL_BASH_IT:-false} ]]; then
                     files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "linux" | grep -v "zsh")
                 else
                     files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "zsh")
                 fi
             else
-                if [[ $INSTALL_BASH_IT == false ]]; then
+                if [[ ! ${INSTALL_BASH_IT:-false} ]]; then
                     files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "linux" | grep -v "osx" | grep -v "zsh")
                 else
                     files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx" | grep -v "zsh")
@@ -176,12 +201,19 @@ install_dotfiles () {
             ;;
     esac
 
-  overwrite_all=false
-  backup_all=false
-  skip_all=false
+    overwrite_all=false
+    backup_all=false
+    skip_all=false
 
     for source in $files; do
         file_base=$(basename "${source%.*}")
+
+        if ${INSTALL_JANUS:-false} ; then
+            if [[ $file_base =~ ^vim ]]; then
+                continue;
+            fi
+        fi
+
         dest="$HOME/.$file_base"
 
         if [ -f $dest ] || [ -d $dest ]; then
@@ -190,7 +222,11 @@ install_dotfiles () {
             backup=false
             skip=false
 
-            if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]; then
+            if [[ ${INSTALL_OH_MY:-false} && $file_base =~ ^zshrc ]]; then
+                overwrite=true;
+            fi
+
+            if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ] && [ "$overwrite" == "false" ]; then
                 user "File already exists: $(basename $dest), what do you want to do? [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
                 read action
 
@@ -244,9 +280,8 @@ framework_check () {
         bash_it_check
     fi
 
-    if [[ $(cat $DOTFILES_ROOT/vim/vimrc.symlink | wc -l) -lt 20 ]]; then
-        echo "Your vimrc is small"
-    fi
+    # Check for Janus install
+    check_vimrc
 
     install_dotfiles
 }
