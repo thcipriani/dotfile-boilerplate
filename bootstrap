@@ -6,6 +6,22 @@ DOTFILES_ROOT="$HOME/.dotfiles"
 set -e
 echo
 
+show_help () {
+cat <<HELP
+Usage: $(basename "$0") [--no-prompt]
+
+  --no-prompt       Optional. Skip prompts for shell/vim frameworks
+
+See the Getting Started for documentation:
+https://github.com/thcipriani/dotfile-boilerplate/docs/getting_started.md
+
+Copyright (c) 2013 Tyler H.T. Cipriani
+Licensed under the MIT license.
+https://github.com/thcipriani/dotfile-boilerplate/LICENSE
+HELP
+exit;
+}
+
 info () {
     printf "\r[ \033[00;34m..\033[0m ] $1\n"
 }
@@ -51,7 +67,12 @@ prompt_shell () {
 
 
 check_shell () {
-    if [[ ! -z "$MYSHELL" ]]; then
+    if [[ ! -z "$SHELL" ]]; then
+        SHELL=$SHELL
+        if [[ "$SHELL" != "bash" && "$SHELL" != "zsh" ]]; then
+            prompt_shell
+        fi
+    elif [[ ! -z "$MYSHELL" ]]; then
         SHELL=$(basename "$MYSHELL");
         if [[ "$SHELL" != "bash" && "$SHELL" != "zsh" ]]; then
             prompt_shell
@@ -64,7 +85,11 @@ check_shell () {
         fi
     fi
 
-    framework_check
+    if $NO_PROMPT; then
+        install_dotfiles
+    else
+        framework_check
+    fi
 }
 
 check_vimrc () {
@@ -155,9 +180,9 @@ install_dotfiles () {
 
     case "$SHELL" in
         zsh )
-            if [ $(uname -s) == "Linux" ]; then
+            if [[ $(uname -s) == "Linux" ]]; then
                 files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "osx")
-            elif [ $(uname -s) == "Darwin" ]; then
+            elif [[ $(uname -s) == "Darwin" ]]; then
                 files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux")
             else
                 files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx")
@@ -191,9 +216,9 @@ install_dotfiles () {
             fi
             ;;
         * )
-            if [ $(uname -s) == "Linux" ]; then
+            if [[ $(uname -s) == "Linux" ]]; then
                 files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "osx" | grep -v "zsh")
-            elif [ $(uname -s) == "Darwin" ]; then
+            elif [[ $(uname -s) == "Darwin" ]]; then
                 files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "zsh")
             else 
                 files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx" | grep -v "zsh")
@@ -285,6 +310,22 @@ framework_check () {
 
     install_dotfiles
 }
+
+if [ ! -z $1 ]; then
+    case "$1" in
+        "--no-prompt" ) 
+            NO_PROMPT=true
+            ;;
+        "--help"|"-h" )
+            show_help
+            ;;
+        * )
+            echo -e "Unknown option: $1\n"
+            show_help
+            ;;
+    esac
+
+fi
 
 # Initialize
 check_shell
