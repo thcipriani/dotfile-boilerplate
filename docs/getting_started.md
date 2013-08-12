@@ -14,8 +14,8 @@ cd ~/.dotfiles
 ## How it works
 
 `bootstrap` will guide you through the setup of sensible defaults for your system.
-All files in this directory (and the any subdirectory that is a direct decentdant 
-of this directory) taht follow the format `*.symlink` will be symlinked in 
+All files in the `~/.dotfiles` directory (and any subdirectory that is a direct decentdant 
+of `~/.dotfiles` directory) that follow the format `*.symlink` will be symlinked in 
 your `$HOME` directory.
 
 ```
@@ -38,7 +38,7 @@ and any configuration files for programs that you already have and want to
 keep. Each of those are meant to hold and bash aliases, exported variables, 
 unique functions or other configuration respectively.
 
-### Some OSX Config, Some Linux Configs
+### Some OSX Configs, Some Linux Configs
 
 In addition to the files in the `~/.dotfiles/shell` directory there are 
 system&#8212;specific copies of those all the `shell` files in their respective 
