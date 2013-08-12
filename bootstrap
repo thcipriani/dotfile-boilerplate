@@ -26,6 +26,38 @@ fail () {
     exit
 }
 
+# https://gist.github.com/davejamesmiller/1965569
+ask () {
+    while true; do
+ 
+        if [ "${2:-}" = "Y" ]; then
+            prompt="Y/n"
+            default=Y
+        elif [ "${2:-}" = "N" ]; then
+            prompt="y/N"
+            default=N
+        else
+            prompt="y/n"
+            default=
+        fi
+ 
+        # Ask the question
+        read -p "$1 [$prompt] " REPLY
+ 
+        # Default?
+        if [ -z "$REPLY" ]; then
+            REPLY=$default
+        fi
+ 
+        # Check if the reply is valid
+        case "$REPLY" in
+            Y*|y*) return 0 ;;
+            N*|n*) return 1 ;;
+        esac
+ 
+    done
+}
+
 link_files () {
     ln -s $1 $2
     success "linked $1 to $2"
@@ -48,7 +80,6 @@ prompt_shell () {
 check_shell () {
     if [[ ! -z "$MYSHELL" ]]; then
         SHELL=$(basename "$MYSHELL");
-
         if [[ "$SHELL" != "bash" && "$SHELL" != "zsh" ]]; then
             prompt_shell
         fi
@@ -63,11 +94,54 @@ check_shell () {
 
 oh_my_zsh_check () {
     if [[ $SHELL == 'zsh' ]]; then
-        if type git >/dev/null 2>&1; then
-            git clone git://github.com/sjl/oh-my-zsh.git $HOME/.oh-my-zsh
-        else
-            info 'git not found—skipping .oh-my-zsh install'
-            SHELL=''
+        user "You are using zshell. Would you like to install Oh-My-Zsh? [y/N]"
+        read -n 1 installit
+ 
+        case "$installit" in
+            Y*|y*) INTSTALL_OH_MY=true ;;
+            N*|n*) INSTALL_OH_MY=false ;;
+            *) INSTALL_OH_MY=false ;;
+        esac
+ 
+        if $INSTALL_OH_MY; then
+            if type git >/dev/null 2>&1; then
+                git clone git://github.com/sjl/oh-my-zsh.git $HOME/.oh-my-zsh
+
+                # Prepend the ~/.zshrc
+                OH_MY_PREFIX=$(cat "$DOTFILES_ROOT/zsh/oh.my.zsh.prefix")
+                ZSHRC=$(cat "$DOTFILES_ROOT/zsh/zshrc.symlink")
+                echo $OH_MY_PREFIX > $DOTFILES_ROOT/zsh/zshrc.symlink
+                echo $ZSHRC > $DOTFILES_ROOT/zsh/zshrc.symlink
+                unset OH_MY_PREFIX;
+                unset ZSHRC;
+            else
+                info 'git not found—skipping .oh-my-zsh install'
+            fi
+        fi
+    fi
+}
+
+bash_it_check () {
+    if [[ $SHELL == 'bash' ]]; then
+        user "You are using bash. Would you like to install Bash-It? [y/N]"
+        read -n 1 installit
+ 
+        case "$installit" in
+            Y*|y*) INTSTALL_BASH_IT=true ;;
+            N*|n*) INSTALL_BASH_IT=false ;;
+            *) INSTALL_BASH_IT=false ;;
+        esac
+ 
+        if $INSTALL_BASH_IT; then
+            if type git >/dev/null 2>&1; then
+                git clone http://github.com/revans/bash-it.git $HOME/.bash_it
+                $HOME/.bash_it/install.sh
+                echo 'if [ -r ~/.bashrc ]; then
+                    source ~/.bashrc
+                fi' >> ~/.bash_profile
+            else
+                info 'git not found—skipping .bash-it install'
+            fi
         fi
     fi
 }
@@ -165,6 +239,7 @@ install_dotfiles () {
 
 check_shell
 oh_my_zsh_check
+bash_it_check
 install_dotfiles
 
 echo ''

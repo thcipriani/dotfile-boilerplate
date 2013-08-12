@@ -4,7 +4,7 @@ alias rr='curl -L http://bit.ly/10hA8iC | bash'
 alias sw='telnet towel.blinkenlights.nl'
 
 if [ $(uname -s) == "Darwin" ]; then
-    source ~/.osx.shell/fun
+    source ~/.osx.dotfiles/fun
 elif [ $(uname -s) == "Linux" ]; then
-    source ~/.linux.shell/fun
+    source ~/.linux.dotfiles/fun
 fi
