@@ -70,8 +70,8 @@ check_shell () {
 check_vimrc () {
     if [[ $(cat $DOTFILES_ROOT/vim/vimrc.symlink | wc -l) -lt 20 ]]; then
         INSTALL_JANUS=false
-        if ! type curl >/dev/null 2>&1; then
-            info "You'll need to install curl to install JANUS"
+        if ! type curl >/dev/null 2>&1 || ! type ack >/dev/null 2>&1, || ! type ctags >/dev/null 2>&1 || ! type git>/dev/null 2>&1 || ! type ruby>/dev/null 2>&1 || ! type rake >/dev/null 2>&1; then
+            info "You'll need to install curl, ack, ctags, git, ruby and rake to install JANUS"
             return
         fi
         user "Your .vimrc is a bit bare. Would you like to install Janus for Vim? [y/N]"
