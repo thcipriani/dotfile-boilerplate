@@ -1,30 +1,52 @@
 # Getting Started with Dotfile Boilerplate
 
-## If you don&#8217;t already have a dotfile collection
+## Quick Start
 
-Simply run the installer and follow the prompts:
+If you don&#8217;t already have a huge collection of dotfiles simply run the 
+installer and follow the prompts:
+
 ```
 git clone git://github.com/thcipriani/dotfile-boilerplate ~/.dotfiles
 cd ~/.dotfiles
 ./bootstrap
 ```
 
-## If you have TONS of dotfiles already
+## How it works
 
-Well, my friend, you&#8217;ve got some work to do&#8212;but the net result 
-should be a very configurable and portable setup.
+`bootstrap` will guide you through the setup of sensible defaults for your system.
+All files in this directory (and the any subdirectory that is a direct decentdant 
+of this directory) taht follow the format `*.symlink` will be symlinked in 
+your `$HOME` directory.
 
-The main files you&#8217;ll want to change are: `~/.dotfiles/shell/aliases.symlink`, 
-`~/.dotfiles/shell/exports.symlink`, `~/.dotfiles/shell/functions.symlink`,
-`~/.dotfiles/shell/extra.symlink` and any configuration files for programs that
-you already have and want to keep. Each of those are meant to hold and bash 
-aliases, exported variables, unique functions or other configuration respectively.
+```
+~/.dotfiles/*/**/basename.symlink → ~/.basename
+```
+
+If you&#8217;ve already accumulated a large collection of dotfiles, 
+this repository should create a very configurable and portable setup for you.
+
+### Files to tweak
+
+The main files you&#8217;ll want to change are: 
+
+- `~/.dotfiles/shell/aliases.symlink`
+- `~/.dotfiles/shell/exports.symlink`
+- `~/.dotfiles/shell/functions.symlink`
+- `~/.dotfiles/shell/extra.symlink`
+
+and any configuration files for programs that you already have and want to 
+keep. Each of those are meant to hold and bash aliases, exported variables, 
+unique functions or other configuration respectively.
+
+### Some OSX Config, Some Linux Configs
 
 In addition to the files in the `~/.dotfiles/shell` directory there are 
 system&#8212;specific copies of those all the `shell` files in their respective 
 system folders&#8212;`osx` for Macs and `linux` for Linux machines.
 
 The goal is to have a single, unified, dotfile repo for all the systems on which you work.
+
+### Default Configs
 
 By default **Dotfile Boilerplate** includes config files for:
 
@@ -35,16 +57,8 @@ By default **Dotfile Boilerplate** includes config files for:
 - ack
 - `.inputrc`
 
-## How does it work?
-
-`bootstrap` will guide you through the setup of sensible defaults for your system.
-All files in this directory (and the any subdirectory that is a direct decentdant 
-of this directory) taht follow the format `*.symlink` will be symlinked in 
-your `$HOME` directory.
-
-```
-~/.dotfiles/*/**/basename.symlink → ~/.basename
-```
+These configurations where amalgamated from various sources which are, largely (hopefully),
+indicated in-line in the actual config file.
 
 ### Semi-Intelligent
 
