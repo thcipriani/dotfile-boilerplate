@@ -164,7 +164,8 @@ bash_it_check () {
 }
 
 check_bash_suffix () {
-    if [[ $SHELL == "bash" && ${INSTALL_BASH_IT:-false} ]]; then
+    if ${INSTALL_BASH_IT:-false}; then
+        info 'Adding bash Suffixes'
         cat "$DOTFILES_ROOT/init/bash.it.bash_profile.suffix" >> ~/.bash_profile
         cat "$DOTFILES_ROOT/init/bash.it.bashrc.suffix" >> ~/.bashrc
     fi
