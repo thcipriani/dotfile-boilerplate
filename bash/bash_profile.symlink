@@ -1,4 +1,4 @@
-[ -n "$PS1" ] && source ~/.bashrc
+[ -z "$PS1" ] && source ~/.bashrc
 
 if [[ -r ~/.bashrc && $(uname -s) == "Darwin" ]]; then
     source ~/.bashrc
