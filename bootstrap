@@ -1,61 +1,27 @@
 #!/usr/bin/env bash
-#
 # bootstrap installs things.
 
 DOTFILES_ROOT="$HOME/.dotfiles"
 
 set -e
-
-echo ''
+echo
 
 info () {
-    printf "  [ \033[00;34m..\033[0m ] $1\n"
+    printf "\r[ \033[00;34m..\033[0m ] $1\n"
 }
 
 user () {
-    printf "\r  [ \033[0;33m?\033[0m ] $1 "
+    printf "\r[ \033[0;33m?\033[0m ] $1 "
 }
 
 success () {
-    printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+    printf "\r\033[2K[ \033[00;32mOK\033[0m ] $1\n"
 }
 
 fail () {
-    printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
-    echo ''
+    printf "\r\033[2K[\033[0;31mFAIL\033[0m] $1\n"
+    echo
     exit
-}
-
-# https://gist.github.com/davejamesmiller/1965569
-ask () {
-    while true; do
- 
-        if [ "${2:-}" = "Y" ]; then
-            prompt="Y/n"
-            default=Y
-        elif [ "${2:-}" = "N" ]; then
-            prompt="y/N"
-            default=N
-        else
-            prompt="y/n"
-            default=
-        fi
- 
-        # Ask the question
-        read -p "$1 [$prompt] " REPLY
- 
-        # Default?
-        if [ -z "$REPLY" ]; then
-            REPLY=$default
-        fi
- 
-        # Check if the reply is valid
-        case "$REPLY" in
-            Y*|y*) return 0 ;;
-            N*|n*) return 1 ;;
-        esac
- 
-    done
 }
 
 link_files () {
@@ -64,8 +30,8 @@ link_files () {
 }
 
 prompt_shell () {
-    user "Could not detect shell type (or shell type wasn't bash or zsh). What do you want to do? [S]kip shell dotfiles, use [b]ash dotfiles, use [z]sh dotfiles?"
-    read -n 1 shelltype
+    user "Could not detect shell type (or shell type wasn't bash or zsh). What do you want to do? [S]kip shell dotfiles, assume [b]ash dotfiles, assume [z]sh dotfiles?"
+    read shelltype
     case "$shelltype" in
         b )
             SHELL='bash';;
@@ -90,93 +56,108 @@ check_shell () {
             prompt_shell
         fi
     fi
+
+    framework_check
 }
 
 oh_my_zsh_check () {
-    if [[ $SHELL == 'zsh' ]]; then
-        user "You are using zshell. Would you like to install Oh-My-Zsh? [y/N]"
-        read -n 1 installit
- 
-        case "$installit" in
-            Y*|y*) INTSTALL_OH_MY=true ;;
-            N*|n*) INSTALL_OH_MY=false ;;
-            *) INSTALL_OH_MY=false ;;
-        esac
- 
-        if $INSTALL_OH_MY; then
-            if type git >/dev/null 2>&1; then
-                git clone git://github.com/sjl/oh-my-zsh.git $HOME/.oh-my-zsh
+    # check already installed
+    if [ -d $HOME/.oh-my-zsh ]; then
+        return
+    fi
 
-                # Prepend the ~/.zshrc
-                OH_MY_PREFIX=$(cat "$DOTFILES_ROOT/zsh/oh.my.zsh.prefix")
-                ZSHRC=$(cat "$DOTFILES_ROOT/zsh/zshrc.symlink")
-                echo $OH_MY_PREFIX > $DOTFILES_ROOT/zsh/zshrc.symlink
-                echo $ZSHRC > $DOTFILES_ROOT/zsh/zshrc.symlink
-                unset OH_MY_PREFIX;
-                unset ZSHRC;
-            else
-                info 'git not found—skipping .oh-my-zsh install'
-            fi
+    user "You are using zshell. Would you like to install Oh-My-Zsh? [y/N]"
+    read installit
+
+    case "$installit" in
+        Y*|y*) INTSTALL_OH_MY=true ;;
+        N*|n*) INSTALL_OH_MY=false ;;
+        *) INSTALL_OH_MY=false ;;
+    esac
+
+    if $INSTALL_OH_MY; then
+        if type git >/dev/null 2>&1; then
+            git clone git://github.com/sjl/oh-my-zsh.git $HOME/.oh-my-zsh
+
+            # Prepend the ~/.zshrc
+            OH_MY_PREFIX=$(cat "$DOTFILES_ROOT/init/oh.my.zsh.prefix")
+            ZSHRC=$(cat "$DOTFILES_ROOT/zsh/zshrc.symlink")
+            echo $OH_MY_PREFIX > $DOTFILES_ROOT/zsh/zshrc.symlink
+            echo $ZSHRC > $DOTFILES_ROOT/zsh/zshrc.symlink
+            unset OH_MY_PREFIX;
+            unset ZSHRC;
+        else
+            info 'git not found—skipping .oh-my-zsh install'
         fi
     fi
 }
 
 bash_it_check () {
-    if [[ $SHELL == 'bash' ]]; then
-        user "You are using bash. Would you like to install Bash-It? [y/N]"
-        read -n 1 installit
- 
-        case "$installit" in
-            Y*|y*) INTSTALL_BASH_IT=true ;;
-            N*|n*) INSTALL_BASH_IT=false ;;
-            *) INSTALL_BASH_IT=false ;;
-        esac
- 
-        if $INSTALL_BASH_IT; then
-            if type git >/dev/null 2>&1; then
-                git clone http://github.com/revans/bash-it.git $HOME/.bash_it
-                $HOME/.bash_it/install.sh
-                echo 'if [ -r ~/.bashrc ]; then
-                    source ~/.bashrc
-                fi' >> ~/.bash_profile
-            else
-                info 'git not found—skipping .bash-it install'
-            fi
+    # check already installed
+    if [ -d $HOME/.bash_it ]; then
+        INSTALL_BASH_IT=true
+        return
+    fi
+
+    user "You are using bash. Would you like to install Bash-It? [y/N]"
+    read installit
+
+    case "$installit" in
+        Y*|y*) INSTALL_BASH_IT=true ;;
+        N*|n*) INSTALL_BASH_IT=false ;;
+        *) INSTALL_BASH_IT=false ;;
+    esac
+
+    if [ $INSTALL_BASH_IT ]; then
+        if type git >/dev/null 2>&1; then
+            git clone http://github.com/revans/bash-it.git $HOME/.bash_it
+            $HOME/.bash_it/install.sh
+        else
+            info 'git not found—skipping .bash-it install'
         fi
     fi
 }
 
-install_dotfiles () {
-    info 'installing dotfiles'
-
-    if [ $(uname -s) == "Darwin" ]; then
-        case "$SHELL" in
-            zsh )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/linux/");;
-            bash )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/linux/");;
-            * )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/linux/");;
-        esac
-    elif [ $(uname -s) == "Linux" ]; then
-        case "$SHELL" in
-            zsh )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/osx/");;
-            bash )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/osx/");;
-            * )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/osx/");;
-        esac
-    else
-        case "$SHELL" in
-            zsh )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/osx/" -not -path "$DOTFILES_ROOT/linux/");;
-            bash )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/osx/" -not -path "$DOTFILES_ROOT/linux/");;
-            * )
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -not -path "$DOTFILES_ROOT/zsh/" -not -path "$DOTFILES_ROOT/bash/" -not -path "$DOTFILES_ROOT/osx/" -not -path "$DOTFILES_ROOT/linux/");;
-        esac
+check_bash_suffix () {
+    if [[ $SHELL == "bash" && $INSTALL_BASH_IT ]]; then
+        cat "$DOTFILES_ROOT/init/bash.it.bash_profile.suffix" >> ~/.bash_profile
+        cat "$DOTFILES_ROOT/init/bash.it.bashrc.suffix" >> ~/.bashrc
     fi
+
+}
+
+install_dotfiles () {
+    info 'Installing dotfiles'
+
+    case "$SHELL" in
+        zsh )
+            if [ $(uname -s) == "Linux" ]; then
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/osx" -prune -o -name \*.symlink -print)
+            elif [ $(uname -s) == "Darwin" ]; then
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+            else
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/osx" -prune -o -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+            fi
+            ;;
+        bash )
+            if [[ $(uname -s) == "Linux" && $INSTALL_BASH_IT == false ]]; then
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/osx" -prune -o -name \*.symlink -print)
+            elif [[ $(uname -s) == "Darwin" && $INSTALL_BASH_IT == false ]]; then
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+            else
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/osx" -prune -o -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+            fi
+            ;;
+        * )
+            if [ $(uname -s) == "Linux" ]; then
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/osx" -prune -o -name \*.symlink -print)
+            elif [ $(uname -s) == "Darwin" ]; then
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+            else 
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/osx" -prune -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+            fi
+            ;;
+    esac
 
   overwrite_all=false
   backup_all=false
@@ -194,7 +175,7 @@ install_dotfiles () {
 
             if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]; then
                 user "File already exists: $(basename $dest), what do you want to do? [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
-                read -n 1 action
+                read action
 
                 case "$action" in
                     o )
@@ -235,12 +216,22 @@ install_dotfiles () {
         fi
 
     done
+
+    check_bash_suffix
 }
 
-check_shell
-oh_my_zsh_check
-bash_it_check
-install_dotfiles
+framework_check () {
+    if [[ $SHELL == 'zsh' ]]; then
+        oh_my_zsh_check
+    elif [[ $SHELL == 'bash' ]]; then
+        bash_it_check
+    fi
 
-echo ''
-echo '  All installed!'
+    install_dotfiles
+}
+
+# Initialize
+check_shell
+
+echo
+echo 'All installed!'

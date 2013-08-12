@@ -1,0 +1,4 @@
+
+if [[ -r ~/.bashrc && $(uname -s) == "Darwin" ]]; then
+    source ~/.bashrc
+fi

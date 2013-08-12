@@ -45,3 +45,7 @@ dotfile-boilerplate heavily "borrows" from many fine dotfile repos
 ## Contributing
 
 Fork me and send me a pull request =)
+
+## Todo
+
+- find file command to be linked wrong somehow
