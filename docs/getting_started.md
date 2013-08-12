@@ -5,7 +5,7 @@
 If you don&#8217;t already have a huge collection of dotfiles simply run the 
 installer and follow the prompts:
 
-```
+```Shell
 git clone git://github.com/thcipriani/dotfile-boilerplate ~/.dotfiles
 cd ~/.dotfiles
 ./bootstrap
@@ -18,7 +18,7 @@ All files in the `~/.dotfiles` directory (and any subdirectory that is a direct 
 of `~/.dotfiles` directory) that follow the format `*.symlink` will be symlinked in 
 your `$HOME` directory.
 
-```
+```Shell
 ~/.dotfiles/*/**/basename.symlink → ~/.basename
 ```
 

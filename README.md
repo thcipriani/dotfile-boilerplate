@@ -4,7 +4,7 @@ Easy and sensible defaults to get started with dotfiles
 
 ## Quickstart
 
-```
+```Shell
 git clone git://github.com/thcipriani/dotfile-boilerplate ~/.dotfiles
 cd ~/.dotfiles
 ./bootstrap
