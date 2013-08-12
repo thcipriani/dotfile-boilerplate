@@ -48,4 +48,4 @@ Fork me and send me a pull request =)
 
 ## Todo
 
-- find file command to be linked wrong somehow
+- Get ZSHRC uncomment sed to work

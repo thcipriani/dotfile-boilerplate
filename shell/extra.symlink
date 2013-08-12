@@ -3,8 +3,8 @@
 # Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
 [ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
 
-if [ $(uname -s) == "Darwin" ]; then
+if [[ $(uname -s) == "Darwin" ]]; then
     source ~/.osx.dotfiles/extra
-elif [ $(uname -s) == "Linux" ]; then
+elif [[ $(uname -s) == "Linux" ]]; then
     source ~/.linux.dotfiles/extra
 fi

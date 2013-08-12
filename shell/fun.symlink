@@ -3,8 +3,8 @@ alias ny='telnet miku.acm.uiuc.edu'
 alias rr='curl -L http://bit.ly/10hA8iC | bash'
 alias sw='telnet towel.blinkenlights.nl'
 
-if [ $(uname -s) == "Darwin" ]; then
+if [[ $(uname -s) == "Darwin" ]]; then
     source ~/.osx.dotfiles/fun
-elif [ $(uname -s) == "Linux" ]; then
+elif [[ $(uname -s) == "Linux" ]]; then
     source ~/.linux.dotfiles/fun
 fi

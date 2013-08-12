@@ -17,6 +17,8 @@ for option in autocd globstar; do
     shopt -s "$option" 2> /dev/null
 done
 
+if [ -n "$PS1" ] && source ~/.bash_profile
+
 # Load ~/.exports, ~/.aliases, ~/.functions, ~/.fun, and ~/.extra
 for file in ~/.{exports,aliases,functions,fun,extra}; do
     [ -r "$file" ] && source "$file"

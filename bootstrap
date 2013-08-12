@@ -25,7 +25,8 @@ fail () {
 }
 
 restart_shell () {
-    exec $SHELL
+    sleep 3
+    source "$HOME/.${SHELL}rc"
 }
 
 link_files () {
@@ -67,6 +68,7 @@ check_shell () {
 oh_my_zsh_check () {
     # check already installed
     if [ -d $HOME/.oh-my-zsh ]; then
+        INSTALL_OH_MY=true
         return
     fi
 
@@ -82,14 +84,6 @@ oh_my_zsh_check () {
     if $INSTALL_OH_MY; then
         if type git >/dev/null 2>&1; then
             git clone git://github.com/sjl/oh-my-zsh.git $HOME/.oh-my-zsh
-
-            # Prepend the ~/.zshrc
-            OH_MY_PREFIX=$(cat "$DOTFILES_ROOT/init/oh.my.zsh.prefix")
-            ZSHRC=$(cat "$DOTFILES_ROOT/zsh/zshrc.symlink")
-            echo $OH_MY_PREFIX > $DOTFILES_ROOT/zsh/zshrc.symlink
-            echo $ZSHRC > $DOTFILES_ROOT/zsh/zshrc.symlink
-            unset OH_MY_PREFIX;
-            unset ZSHRC;
         else
             info 'git not found—skipping .oh-my-zsh install'
         fi
@@ -142,6 +136,12 @@ install_dotfiles () {
                 files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux")
             else
                 files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx")
+            fi
+
+            if [[ $INSTALL_OH_MY == true ]]; then
+                echo 'Uncomment zshrc'
+                # Uncomment the OH-MY-ZSH section if it exists
+                sed -i '/^#~OH-MY-ZSH~#$/,/^#~\/OH-MY-ZSH~#$/s/^#//' "$DOTFILES_ROOT/zsh/zshrc.symlink"
             fi
             ;;
         bash )
@@ -242,6 +242,10 @@ framework_check () {
         oh_my_zsh_check
     elif [[ $SHELL == 'bash' ]]; then
         bash_it_check
+    fi
+
+    if [[ $(cat $DOTFILES_ROOT/vim/vimrc.symlink | wc -l) -lt 20 ]]; then
+        echo "Your vimrc is small"
     fi
 
     install_dotfiles

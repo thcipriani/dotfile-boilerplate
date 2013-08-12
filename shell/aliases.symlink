@@ -6,22 +6,12 @@ alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
-alias ~="cd ~" # `cd` is probably faster to type though
 alias -- -="cd -"
 
 # Shortcuts
-alias d="cd ~/Documents/Dropbox"
-alias dl="cd ~/Downloads"
-alias dt="cd ~/Desktop"
-alias p="cd ~/Projects"
-alias g="git"
 alias h="history"
 alias j="jobs"
 alias v="vim"
-alias m="mate ."
-alias s="subl ."
-alias o="open"
-alias oo="open ."
 alias ll="ls -AlFh"
 
 # Detect which `ls` flavor is in use
@@ -56,12 +46,8 @@ alias week='date +%V'
 # Stopwatch
 alias timer='echo "Timer started. Stop with Ctrl-D." && date && time cat && date'
 
-# Get OS X Software Updates, and update installed Ruby gems, Homebrew, npm, and their installed packages
-alias update='sudo softwareupdate -i -a; brew update; brew upgrade; brew cleanup; npm update npm -g; npm update -g; sudo gem update'
-
 # IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
-alias localip="ipconfig getifaddr en1"
 alias ips="ifconfig -a | grep -o 'inet6\? \(\([0-9]\+\.[0-9]\+\.[0-9]\+\.[0-9]\+\)\|[a-fA-F0-9:]\+\)' | sed -e 's/inet6* //'"
 
 # Enhanced WHOIS lookups
@@ -97,8 +83,8 @@ done
 # Make Grunt print stack traces by default
 command -v grunt > /dev/null && alias grunt="grunt --stack"
 
-if [ $(uname -s) == "Darwin" ]; then
+if [[ $(uname -s) == "Darwin" ]]; then
     source ~/.osx.dotfiles/aliases
-elif [ $(uname -s) == "Linux" ]; then
+elif [[ $(uname -s) == "Linux" ]]; then
     source ~/.linux.dotfiles/aliases
 fi
