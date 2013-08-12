@@ -14,8 +14,8 @@ cd ~/.dotfiles
 ## How it works
 
 `bootstrap` will guide you through the setup of sensible defaults for your system.
-All files in the `~/.dotfiles` directory (and any subdirectory that is a direct decentdant 
-of `~/.dotfiles` directory) that follow the format `*.symlink` will be symlinked in 
+All files in the `~/.dotfiles` directory (and any subdirectory that is a direct descendant 
+of the `~/.dotfiles` directory) that follow the format `*.symlink` will be symlinked in 
 your `$HOME` directory.
 
 ```Shell
