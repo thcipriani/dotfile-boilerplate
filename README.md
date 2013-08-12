@@ -23,14 +23,17 @@ see: http://dotfiles.github.io/
 There is no canonical method for dotfile organization, sharing and bootstraping 
 that is cross-shell and cross-system compatible.
 
-The goal of this project is to change that&#8212;all of that.
-
-This project should work to provide dotfile beginners with sensible defaults
+This project should work to provide dotfile-beginners with sensible defaults
 and advanced users with a powerful, configurable framework on which to build.
 
 ## Features
 
-dotfile-boilerplate heavily "borrows" from many fine dotfile repos
+At it&#8217;s core, **Dotfile Boilerplate** is a system for dotfile 
+organization more than an opinionated framework.
+
+There are, however, some sensible defaults to help beginners get started.
+
+**Dotfile Boilerplate** heavily "borrows" from many fine dotfile repos
 
 - _Heavily Modified_ [holman](https://github.com/holman/dotfiles) boostrap script
 - [mathiasbynens](http://mths.be/dotfiles) exports, aliases and functions and osx where applicable
@@ -42,6 +45,8 @@ dotfile-boilerplate heavily "borrows" from many fine dotfile repos
 - [metellius](http://www.reddit.com/r/commandline/comments/kbeoe/you_can_make_readline_and_bash_much_more_user/) + [mathiasbynens](http://mths.be/dotfiles) inputrc
 - [sjl](https://bitbucket.org/sjl/dotfiles/src/a3ff27f963ced7e7e1e024faab6b5c8d46557172/tmux/tmux.conf?at=default)'s tmux.conf
 - a very fine screenrc that's source I no longer remember
+
+All of that can, of course, be overridden. 
 
 ## Learn More
 
