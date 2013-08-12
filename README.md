@@ -10,6 +10,8 @@ cd ~/.dotfiles
 ./bootstrap
 ```
 
+Follow the prompts
+
 ## What's a dotfile?
 
 see: http://dotfiles.github.io/
@@ -33,7 +35,7 @@ a wellspring of ideas.
 dotfile-boilerplate heavily "borrows" from many fine dotfile repos
 
 - _Heavily Modified_ [holman](https://github.com/holman/dotfiles) boostrap script
-- [mathiasbynens](http://mths.be/dotfiles) exports, aliases and functions
+- [mathiasbynens](http://mths.be/dotfiles) exports, aliases and functions and osx where applicable
 - [tpope](https://github.com/tpope/vim-pathogen)'s Pathogen and sensible.vim
 - [gf3](https://github.com/gf3/dotfiles)'s Sexy Bash Prompt (for Bash Users)
 - [robbyrussell](https://github.com/robbyrussell/oh-my-zsh)'s Oh-my-zsh (for ZSH Users)
@@ -41,6 +43,10 @@ dotfile-boilerplate heavily "borrows" from many fine dotfile repos
 - [metellius](http://www.reddit.com/r/commandline/comments/kbeoe/you_can_make_readline_and_bash_much_more_user/) + [mathiasbynens](http://mths.be/dotfiles) inputrc
 - [sjl](https://bitbucket.org/sjl/dotfiles/src/a3ff27f963ced7e7e1e024faab6b5c8d46557172/tmux/tmux.conf?at=default)'s tmux.conf
 - a very fine screenrc that's source I no longer remember
+
+## Learn More
+
+Checkout the [documentation](docs/getting_started.md).
 
 ## Contributing
 
