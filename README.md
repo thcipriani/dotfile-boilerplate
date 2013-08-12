@@ -20,7 +20,7 @@ see: http://dotfiles.github.io/
 
 ## Why
 
-There is no canonical method for dotfile organization, sharing and bootstraping 
+There is no canonical method for dotfile organization, sharing, and bootstraping 
 that is cross-shell and cross-system compatible.
 
 This project should work to provide dotfile-beginners with sensible defaults
