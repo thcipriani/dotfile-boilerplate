@@ -40,7 +40,6 @@ fail () {
 
 restart_shell () {
     if [[ ! -z $SHELL ]]; then
-        exec $SHELL
         source "$HOME/.${SHELL}rc"
     fi
 }
@@ -66,7 +65,7 @@ prompt_shell () {
 
 check_shell () {
     if [[ ! -z "$SHELL" ]]; then
-        SHELL=$SHELL
+        SHELL=$(basename "$SHELL");
         if [[ "$SHELL" != "bash" && "$SHELL" != "zsh" ]]; then
             prompt_shell
         fi
@@ -83,7 +82,7 @@ check_shell () {
         fi
     fi
 
-    if $NO_PROMPT; then
+    if ${NO_PROMPT:-false}; then
         install_dotfiles
     else
         framework_check
@@ -93,23 +92,23 @@ check_shell () {
 check_vimrc () {
     if [[ $(cat $DOTFILES_ROOT/vim/vimrc.symlink | wc -l) -lt 20 ]]; then
         INSTALL_JANUS=false
-        if ! type curl >/dev/null 2>&1 || ! type ack >/dev/null 2>&1, || ! type ctags >/dev/null 2>&1 || ! type git>/dev/null 2>&1 || ! type ruby>/dev/null 2>&1 || ! type rake >/dev/null 2>&1; then
+        if [ type curl >/dev/null 2>&1 ] && [ type ack >/dev/null 2>&1 ] && [ type ctags >/dev/null 2>&1 ] && [ type git>/dev/null 2>&1 ] && [ type ruby>/dev/null 2>&1 ] && [ type rake >/dev/null 2>&1]; then
+            user "Your .vimrc is a bit bare. Would you like to install Janus for Vim? [y/N]"
+            read installit
+
+            case "$installit" in
+                Y*|y*) INSTALL_JANUS=true ;;
+                N*|n*) INSTALL_JANUS=false ;;
+                *) INSTALL_JANUS=false ;;
+            esac
+
+            if $INSTALL_JANUS ; then
+                curl -Lo- https://bit.ly/janus-bootstrap | bash
+            fi
+        else
             info "You'll need to install curl, ack, ctags, git, ruby and rake to install JANUS"
             return
         fi
-        user "Your .vimrc is a bit bare. Would you like to install Janus for Vim? [y/N]"
-        read installit
-
-        case "$installit" in
-            Y*|y*) INSTALL_JANUS=true ;;
-            N*|n*) INSTALL_JANUS=false ;;
-            *) INSTALL_JANUS=false ;;
-        esac
-
-        if $INSTALL_JANUS ; then
-            curl -Lo- https://bit.ly/janus-bootstrap | bash
-        fi
-
     fi
 }
 
@@ -154,7 +153,7 @@ bash_it_check () {
         *) INSTALL_BASH_IT=false ;;
     esac
 
-    if [ $INSTALL_BASH_IT ]; then
+    if $INSTALL_BASH_IT; then
         if type git >/dev/null 2>&1; then
             git clone http://github.com/revans/bash-it.git $HOME/.bash_it
             $HOME/.bash_it/install.sh
@@ -169,8 +168,6 @@ check_bash_suffix () {
         cat "$DOTFILES_ROOT/init/bash.it.bash_profile.suffix" >> ~/.bash_profile
         cat "$DOTFILES_ROOT/init/bash.it.bashrc.suffix" >> ~/.bashrc
     fi
-
-    restart_shell
 }
 
 install_dotfiles () {
@@ -194,22 +191,22 @@ install_dotfiles () {
             ;;
         bash )
             if [[ $(uname -s) == "Linux" ]]; then
-                if [[ ! ${INSTALL_BASH_IT:-false} ]]; then
-                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "osx" | grep -v "zsh")
-                else
+                if ${INSTALL_BASH_IT:-false}; then
                     files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "osx" | grep -v "zsh")
+                else
+                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "osx" | grep -v "zsh")
                 fi
             elif [[ $(uname -s) == "Darwin" ]]; then
-                if [[ ! ${INSTALL_BASH_IT:-false} ]]; then
-                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "linux" | grep -v "zsh")
-                else
+                if ${INSTALL_BASH_IT:-false}; then
                     files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "zsh")
+                else
+                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "zsh")
                 fi
             else
-                if [[ ! ${INSTALL_BASH_IT:-false} ]]; then
-                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "linux" | grep -v "osx" | grep -v "zsh")
-                else
+                if ${INSTALL_BASH_IT:-false}; then
                     files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx" | grep -v "zsh")
+                else
+                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "linux" | grep -v "osx" | grep -v "zsh")
                 fi
             fi
             ;;
@@ -294,6 +291,8 @@ install_dotfiles () {
     done
 
     check_bash_suffix
+
+    restart_shell
 }
 
 framework_check () {
@@ -327,6 +326,9 @@ fi
 
 echo
 
+unset $INSTALL_OH_MY
+unset $INSTALL_BASH_IT
+unset $INSTALL_JANUS
 # Initialize
 check_shell
 
