@@ -24,6 +24,10 @@ fail () {
     exit
 }
 
+restart_shell () {
+    exec $SHELL
+}
+
 link_files () {
     ln -s $1 $2
     success "linked $1 to $2"
@@ -124,6 +128,7 @@ check_bash_suffix () {
         cat "$DOTFILES_ROOT/init/bash.it.bashrc.suffix" >> ~/.bashrc
     fi
 
+    restart_shell
 }
 
 install_dotfiles () {
@@ -132,29 +137,41 @@ install_dotfiles () {
     case "$SHELL" in
         zsh )
             if [ $(uname -s) == "Linux" ]; then
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/osx" -prune -o -name \*.symlink -print)
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "osx")
             elif [ $(uname -s) == "Darwin" ]; then
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux")
             else
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/osx" -prune -o -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx")
             fi
             ;;
         bash )
-            if [[ $(uname -s) == "Linux" && $INSTALL_BASH_IT == false ]]; then
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/osx" -prune -o -name \*.symlink -print)
-            elif [[ $(uname -s) == "Darwin" && $INSTALL_BASH_IT == false ]]; then
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+            if [[ $(uname -s) == "Linux" ]]; then
+                if [[ $INSTALL_BASH_IT == false ]]; then
+                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "osx" | grep -v "zsh")
+                else
+                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "osx" | grep -v "zsh")
+                fi
+            elif [[ $(uname -s) == "Darwin" ]]; then
+                if [[ $INSTALL_BASH_IT == false ]]; then
+                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "linux" | grep -v "zsh")
+                else
+                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "zsh")
+                fi
             else
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/osx" -prune -o -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+                if [[ $INSTALL_BASH_IT == false ]]; then
+                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "linux" | grep -v "osx" | grep -v "zsh")
+                else
+                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx" | grep -v "zsh")
+                fi
             fi
             ;;
         * )
             if [ $(uname -s) == "Linux" ]; then
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/osx" -prune -o -name \*.symlink -print)
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "osx" | grep -v "zsh")
             elif [ $(uname -s) == "Darwin" ]; then
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "zsh")
             else 
-                files=$(find $DOTFILES_ROOT -maxdepth 2 -wholename "$DOTFILES/bash" -prune -o -wholename "$DOTFILES/zsh" -prune -o -wholename "$DOTFILES/osx" -prune -wholename "$DOTFILES/linux" -prune -o -name \*.symlink -print)
+                files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "osx" | grep -v "zsh")
             fi
             ;;
     esac
