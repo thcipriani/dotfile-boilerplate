@@ -1,5 +1,33 @@
-[ -z "$PS1" ] && source ~/.bashrc
+# Modified/Stolen from:
+# http://mths.be/dotfiles
 
-if [[ -r ~/.bashrc && $(uname -s) == "Darwin" ]]; then
-    source ~/.bashrc
+# Case-insensitive globbing (used in pathname expansion)
+shopt -s nocaseglob
+
+# Append to the Bash history file, rather than overwriting it
+shopt -s histappend
+
+# Autocorrect typos in path names when using `cd`
+shopt -s cdspell
+
+# Enable some Bash 4 features when possible:
+# * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
+# * Recursive globbing, e.g. `echo **/*.txt`
+for option in autocd globstar; do
+    shopt -s "$option" 2> /dev/null
+done
+
+if [ -r ~/.bash_prompt ]; then
+    source ~/.bash_prompt
+fi
+
+# Load ~/.exports, ~/.aliases, ~/.functions, ~/.fun, and ~/.extra
+for file in ~/.{exports,aliases,functions,fun,extra}; do
+    [ -r "$file" ] && source "$file"
+done
+unset file
+
+# Add any system specifics to /etc/bashrc
+if [ -r "/etc/bashrc" ]; then
+    source "/etc/bashrc"
 fi

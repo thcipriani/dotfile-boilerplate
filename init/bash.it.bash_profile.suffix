@@ -1,4 +1,11 @@
 
-if [[ -r ~/.bashrc && $(uname -s) == "Darwin" ]]; then
-    source ~/.bashrc
+# Load ~/.exports, ~/.aliases, ~/.functions, ~/.fun, and ~/.extra
+for file in ~/.{exports,aliases,functions,fun,extra}; do
+    [ -r "$file" ] && source "$file"
+done
+unset file
+
+# Add any system specifics to /etc/bashrc
+if [ -r "/etc/bashrc" ]; then
+    source "/etc/bashrc"
 fi

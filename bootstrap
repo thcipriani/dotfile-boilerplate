@@ -39,9 +39,7 @@ fail () {
 }
 
 restart_shell () {
-    if [[ ! -z $SHELL ]]; then
-        source "$HOME/.${SHELL}rc"
-    fi
+    info "Restart your shell to see you changes take effect"
 }
 
 link_files () {
@@ -64,12 +62,12 @@ prompt_shell () {
 
 
 check_shell () {
-    if [[ ! -z "$SHELL" ]]; then
+    if [[ -n "$SHELL" ]]; then
         SHELL=$(basename "$SHELL");
         if [[ "$SHELL" != "bash" && "$SHELL" != "zsh" ]]; then
             prompt_shell
         fi
-    elif [[ ! -z "$MYSHELL" ]]; then
+    elif [[ -n "$MYSHELL" ]]; then
         SHELL=$(basename "$MYSHELL");
         if [[ "$SHELL" != "bash" && "$SHELL" != "zsh" ]]; then
             prompt_shell
@@ -165,9 +163,8 @@ bash_it_check () {
 
 check_bash_suffix () {
     if ${INSTALL_BASH_IT:-false}; then
-        info 'Adding bash Suffixes'
-        cat "$DOTFILES_ROOT/init/bash.it.bash_profile.suffix" >> ~/.bash_profile
-        cat "$DOTFILES_ROOT/init/bash.it.bashrc.suffix" >> ~/.bashrc
+        info 'Appending to ~/.bash_profile'
+        cat "$DOTFILES_ROOT/init/bash.it.bash_profile.suffix" >> $HOME/.bash_profile
     fi
 }
 
@@ -309,7 +306,7 @@ framework_check () {
     install_dotfiles
 }
 
-if [ ! -z $1 ]; then
+if [[ $1 != '' ]]; then
     case "$1" in
         "--no-prompt" ) 
             NO_PROMPT=true
