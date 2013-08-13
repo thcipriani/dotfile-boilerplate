@@ -36,8 +36,6 @@ The basic structure of **Dotfile Boilerplate** is based on Zach Holman's
 files are grouped by topic (e.g., "git", "vim", "zsh", etc.)., and a file 
 named `[whatever].symlink` will by symlinked to `~/.[whatever]`.
 
-There are, however, some sensible defaults to help beginners get started.
-
 **Dotfile Boilerplate** heavily "borrows" from many fine dotfile repos
 
 - _Heavily Modified_ [holman](https://github.com/holman/dotfiles) boostrap script

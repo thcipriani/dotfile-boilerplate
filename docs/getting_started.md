@@ -8,7 +8,7 @@ installer and follow the prompts:
 ```Shell
 git clone git://github.com/thcipriani/dotfile-boilerplate ~/.dotfiles
 cd ~/.dotfiles
-./bootstrap
+./bootstrap --new-setup
 ```
 
 ## How it works
