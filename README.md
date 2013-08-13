@@ -31,6 +31,11 @@ and advanced users with a powerful, configurable framework on which to build.
 At it&#8217;s core, **Dotfile Boilerplate** is a system for dotfile 
 organization more than an opinionated framework.
 
+The basic structure of **Dotfile Boilerplate** is based on Zach Holman's 
+[holman/dotfiles](https://github.com/holman/dotfiles) dotfiles. Configuration 
+files are grouped by topic (e.g., "git", "vim", "zsh", etc.)., and a file 
+named `[whatever].symlink` will by symlinked to `~/.[whatever]`.
+
 There are, however, some sensible defaults to help beginners get started.
 
 **Dotfile Boilerplate** heavily "borrows" from many fine dotfile repos
@@ -45,6 +50,13 @@ There are, however, some sensible defaults to help beginners get started.
 - [metellius](http://www.reddit.com/r/commandline/comments/kbeoe/you_can_make_readline_and_bash_much_more_user/) + [mathiasbynens](http://mths.be/dotfiles) inputrc
 - [sjl](https://bitbucket.org/sjl/dotfiles/src/a3ff27f963ced7e7e1e024faab6b5c8d46557172/tmux/tmux.conf?at=default)'s tmux.conf
 - a very fine screenrc that's source I no longer remember
+
+**Further inspiration came from**
+
+- [jclem](https://github.com/jclem/dotfiles)'s dotfiles
+- [ldmosquera](https://github.com/ldmosquera/dotfiles/wiki)'s dotfile wiki
+- [heptal](https://gist.github.com/heptal/6052573)'s tput abuse
+- [pastjean](https://github.com/pastjean/dotfiles)'s dotfiles
 
 All of that can, of course, be overridden. 
 

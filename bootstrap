@@ -6,9 +6,10 @@ DOTFILES_ROOT="$HOME/.dotfiles"
 set -e
 
 show_help () { cat <<HELP
-Usage: $(basename "$0") [--no-prompt]
+Usage: $(basename "$0") [--new-setup]
 
-  --no-prompt       Optional. Skip prompts for shell/vim frameworks
+  --new-setup       Optional. Will prompt you to install various frameworks
+                    Janus, Oh-My-Zsh and/or Bash-It
 
 See the Getting Started for documentation:
 https://github.com/thcipriani/dotfile-boilerplate/blob/master/docs/getting_started.md
@@ -80,10 +81,10 @@ check_shell () {
         fi
     fi
 
-    if ${NO_PROMPT:-false}; then
-        install_dotfiles
-    else
+    if ${NEW_SETUP:-false}; then
         framework_check
+    else
+        install_dotfiles
     fi
 }
 
@@ -164,7 +165,7 @@ bash_it_check () {
 check_bash_suffix () {
     if ${INSTALL_BASH_IT:-false}; then
         info 'Appending to ~/.bash_profile'
-        cat "$DOTFILES_ROOT/init/bash.it.bash_profile.suffix" >> $HOME/.bash_profile
+        cat "$DOTFILES_ROOT/.config/bash.it.bash_profile.suffix" >> $HOME/.bash_profile
     fi
 }
 
@@ -308,8 +309,8 @@ framework_check () {
 
 if [[ $1 != '' ]]; then
     case "$1" in
-        "--no-prompt" ) 
-            NO_PROMPT=true
+        "--new-setup" ) 
+            NEW_SETUP=true
             ;;
         "--help"|"-h" )
             show_help

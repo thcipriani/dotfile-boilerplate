@@ -30,10 +30,10 @@ on github, bitbucket, dropbox, s3 or wherever.
 
 The main files you&#8217;ll want to change are: 
 
-- `~/.dotfiles/shell/aliases.symlink`
-- `~/.dotfiles/shell/exports.symlink`
-- `~/.dotfiles/shell/functions.symlink`
-- `~/.dotfiles/shell/extra.symlink`
+- `~/.dotfiles/profile.d/aliases.symlink`
+- `~/.dotfiles/profile.d/exports.symlink`
+- `~/.dotfiles/profile.d/functions.symlink`
+- `~/.dotfiles/profile.d/extra.symlink`
 
 Each of those are meant to hold and bash aliases, exported variables, 
 unique functions or other configuration, respectively.
@@ -82,9 +82,11 @@ using Z-Shell, it won&#8217;t install anything from the `bash` directory.
 
 ### Prompts
 
-To skip being prompted to install any frameworks simply run bootstrap with the `--no-prompt` option.
+`bootstrap` is also able to semi-intelligently a small collection of dotfile frameworks.
 
-As the bootstrap script runs you _may_&#8212;depending on your current configurations&#8212;be
+To be prompted to install new frameworks simply run bootstrap with the `--new-setup` option.
+
+If you run the bootstrap script with the `--new-setup` flag you _may_&#8212;depending on your current configurations&#8212;be
 prompted to install some shell frameworks ([Oh-My-ZSH](http://github.com/robbyrussell/oh-my-zsh/) for Z-Shell users
 and [Bash-It](https://github.com/revans/bash-it) for Bash users).
 
