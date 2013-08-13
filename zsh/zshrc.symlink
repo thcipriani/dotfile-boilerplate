@@ -8,7 +8,7 @@
 #
 ## Set to the name theme to load.
 ## Look in ~/.oh-my-zsh/themes/
-#export ZSH_THEME="prose"
+#export ZSH_THEME="robbyrussell"
 #
 ## Set to this to use case-sensitive completion
 ## export CASE_SENSITIVE="true"
@@ -32,8 +32,3 @@ for file in ~/.{exports,aliases,functions,fun,extra}; do
     [ -r "$file" ] && source "$file"
 done
 unset file
-
-# Add any system specifics to /etc/bashrc
-if [ -r "/etc/bashrc" ]; then
-    source "/etc/bashrc"
-fi

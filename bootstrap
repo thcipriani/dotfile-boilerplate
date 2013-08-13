@@ -185,7 +185,7 @@ install_dotfiles () {
             if ${INSTALL_OH_MY:-false} ; then
                 echo 'Uncomment .zshrc'
                 # Uncomment the OH-MY-ZSH section if it exists
-                sed -i '/^##~OH-MY-ZSH~#$/,/^##~\/OH-MY-ZSH~#$/s/^#//' "$DOTFILES_ROOT/zsh/zshrc.symlink"
+                sed -i '.backup' '/^##~OH-MY-ZSH~#$/,/^##~\/OH-MY-ZSH~#$/s/^#//' "$DOTFILES_ROOT/zsh/zshrc.symlink"
             fi
             ;;
         bash )
