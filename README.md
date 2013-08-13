@@ -50,7 +50,7 @@ All of that can, of course, be overridden.
 
 ## Learn More
 
-Checkout the [documentation](docs/getting_started.md).
+Checkout the [documentation](https://github.com/thcipriani/dotfile-boilerplate/blob/master/docs/getting_started.md).
 
 ## Contributing
 
