@@ -199,7 +199,7 @@ install_dotfiles () {
                 if ${INSTALL_BASH_IT:-false}; then
                     files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "linux" | grep -v "zsh")
                 else
-                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "bash" | grep -v "zsh")
+                    files=$(find $DOTFILES_ROOT -maxdepth 2 -name \*.symlink -print | grep -v "linux" | grep -v "zsh")
                 fi
             else
                 if ${INSTALL_BASH_IT:-false}; then
@@ -234,6 +234,10 @@ install_dotfiles () {
         fi
 
         dest="$HOME/.$file_base"
+
+        if [ -h $dest ] && [ $(readlink $dest) = $source ]; then
+            continue;
+        fi
 
         if [ -f $dest ] || [ -d $dest ]; then
 
