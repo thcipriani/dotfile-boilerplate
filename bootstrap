@@ -235,6 +235,10 @@ install_dotfiles () {
 
         dest="$HOME/.$file_base"
 
+        if [ -h $dest ] && [ $(readlink $dest) = $source ]; then
+            continue;
+        fi
+
         if [ -f $dest ] || [ -d $dest ]; then
 
             overwrite=false
