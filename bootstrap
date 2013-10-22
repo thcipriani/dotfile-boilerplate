@@ -39,10 +39,6 @@ fail () {
     exit
 }
 
-restart_shell () {
-    info "Restart your shell to see you changes take effect"
-}
-
 link_files () {
     ln -s "$1" "$2"
     success "linked $1 to $2"
@@ -185,7 +181,11 @@ install_dotfiles () {
             if ${INSTALL_OH_MY:-false} ; then
                 echo 'Uncomment .zshrc'
                 # Uncomment the OH-MY-ZSH section if it exists
-                sed -i '.backup' '/^##~OH-MY-ZSH~#$/,/^##~\/OH-MY-ZSH~#$/s/^#//' "$DOTFILES_ROOT/zsh/zshrc.symlink"
+		if [[ $(uname -s) == "Darwin" ]]; then
+		    sed -i '.backup' '/^##~OH-MY-ZSH~#$/,/^##~\/OH-MY-ZSH~#$/s/^#//' "$DOTFILES_ROOT/zsh/zshrc.symlink"
+		elif [[ $(uname -s) == "Linux" ]]; then
+		    sed -i'.backup' '/^##~OH-MY-ZSH~#$/,/^##~\/OH-MY-ZSH~#$/s/^#//' "$DOTFILES_ROOT/zsh/zshrc.symlink"
+		fi
             fi
             ;;
         bash )
@@ -310,6 +310,13 @@ framework_check () {
 
     install_dotfiles
 }
+
+
+restart_shell () {
+    exec "$(which $SHELL)"  -l
+    info "enjoy!"
+}
+
 
 if [[ "$1" != '' ]]; then
     case "$1" in
